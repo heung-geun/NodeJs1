@@ -61,5 +61,40 @@ router.get('/goods/:goodsId', (req, res) => {
 return res.status(200).json({goods: findGoods});
 })
 
+// 상품 등록 API //
+
+router.post('/goods', (req, res) => {
+// 1. name, thumbnailUrl, category, price를 req.body로 전달받는다.
+// 2. 해당하는 데이터를 바탕으로 상품을 등록한다.
+// 3. 등록된 상품 데이터를 클라이언트에게 반호나한다.
+
+// 아래 4줄은 구조분해할당으로 인해 
+// const {name, thumbnailUrl, category, price} = req.body 로 변환이 가능하다.
+
+// const name = req.body.name;
+// const thumbnailUrl = req.body.thumbnailUrl;
+// const category = req.body.category;
+// const price = req.body.price;
+
+const {name, thumbnailUrl, category, price} = req.body;
+
+// +1된 goodsId를 가져온다.
+const goodsId = goods[goods.length - 1].goodsId + 1;
+
+// 구조분해할당 사용
+const goodsItem = {
+  goodsId,
+  name,
+  thumbnailUrl,
+  category,
+  price,
+}
+
+goods.push(goodsItem);
+
+return res.status(201).json({goods: goodsItem});
+
+})
+
 
 export default router;
