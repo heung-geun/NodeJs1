@@ -42,11 +42,24 @@ const goods = [
 ];
 
 // 상품 목록 조회 API // 
-router.get('./goods', (req, res) => {
+router.get('/goods', (req, res) => {
   return res.status(200).json({
-    goods: goods
+    goods: goods,
   })
 });
+
+// 상품 상세 조회 API //
+router.get('/goods/:goodsId', (req, res) => {
+  // 1. 상품의 id 조회
+  // 2. 상품 id와 일치하는 데이터 찾기
+  // 3. 조회된 상품 정보를 Response로 Return 한다.
+
+  const goodsId = req.params.goodsId;
+
+  const findGoods = goods.find((oneGoods) => oneGoods.goodsId === +goodsId);
+
+return res.status(200).json({goods: findGoods});
+})
 
 
 export default router;
