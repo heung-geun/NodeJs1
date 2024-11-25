@@ -7,6 +7,11 @@ import newsRouter from './routes/news.js';
 const app = express();
 const PORT = 3000; // 서버를 열 때 사용할 포트 번호
 
+// Express에서 req.body에 접근하여, body 데이터를 
+// 사용할 수 있도록 설정하는 미들웨어
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); // 협업할때 사용
+
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
