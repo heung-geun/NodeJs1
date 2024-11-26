@@ -3,9 +3,12 @@
 import express from 'express';
 import goodsRouter from './routes/goods.js';
 import newsRouter from './routes/news.js';
+import connect  from './schemas/index.js';
 
 const app = express();
 const PORT = 3000; // 서버를 열 때 사용할 포트 번호
+
+connect();
 
 // Express에서 req.body에 접근하여, body 데이터를 
 // 사용할 수 있도록 설정하는 미들웨어

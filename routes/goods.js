@@ -4,97 +4,38 @@ import express from 'express';
 const router = express.Router();
 
 
-// /routes/goods.js
+// 1. mongoose
+import mongoose from 'mongoose';
+import Goods from '../schemas/goods.js';
 
-const goods = [
-  {
-    goodsId: 1,
-    name: '상품 1',
-    thumbnailUrl:
-      'https://cdn.pixabay.com/photo/2016/09/07/19/54/wines-1652455_1280.jpg',
-    category: 'drink',
-    price: 6.2,
-  },
-  {
-    goodsId: 2,
-    name: '상품 2',
-    thumbnailUrl:
-      'https://cdn.pixabay.com/photo/2014/08/26/19/19/wine-428316_1280.jpg',
-    category: 'drink',
-    price: 0.11,
-  },
-  {
-    goodsId: 3,
-    name: '상품 3',
-    thumbnailUrl:
-      'https://cdn.pixabay.com/photo/2016/09/07/02/12/frogs-1650658_1280.jpg',
-    category: 'drink',
-    price: 2.2,
-  },
-  {
-    goodsId: 4,
-    name: '상품 4',
-    thumbnailUrl:
-      'https://cdn.pixabay.com/photo/2016/09/07/02/11/frogs-1650657_1280.jpg',
-    category: 'drink',
-    price: 0.1,
-  },
-];
 
-// 상품 목록 조회 API // 
-router.get('/goods', (req, res) => {
-  return res.status(200).json({
-    goods: goods,
-  })
-});
+// 2. API 구현하기
+router.post('/goods', async (req, res) => {
 
-// 상품 상세 조회 API //
-router.get('/goods/:goodsId', (req, res) => {
-  // 1. 상품의 id 조회
-  // 2. 상품 id와 일치하는 데이터 찾기
-  // 3. 조회된 상품 정보를 Response로 Return 한다.
+  // 3. 클라이언트로 부터 전달받은 데이터를 가져온다.
+  // 
+  const {goodsId, name, thumbnailUrl, category, price} = req.body
+  // 4. goodsId 중복되지 않았는지 검사한다.
+  const goods = await Goods.find({ goodsId: goodsId }).exec();
+  // 4-1. 만약, goodsId가 중복된다면, 에러메시지를 전달한다.
+  if(goods.length) {
+    return res.status(400).json({errorMessage: '이미 존재하는 데이터입니다.'});
+  }
 
-  const goodsId = req.params.goodsId;
+  // 5. 상품(Goods)를 생성한다.
+   const createdGoods = await Goods.create({
+    goodsId: goodsId,
+    name: name,
+    thumbnailUrl: thumbnailUrl,
+    category: category,
+    price: price,
+   });
 
-  const findGoods = goods.find((oneGoods) => oneGoods.goodsId === +goodsId);
-
-return res.status(200).json({goods: findGoods});
-})
-
-// 상품 등록 API //
-
-router.post('/goods', (req, res) => {
-// 1. name, thumbnailUrl, category, price를 req.body로 전달받는다.
-// 2. 해당하는 데이터를 바탕으로 상품을 등록한다.
-// 3. 등록된 상품 데이터를 클라이언트에게 반호나한다.
-
-// 아래 4줄은 구조분해할당으로 인해 
-// const {name, thumbnailUrl, category, price} = req.body 로 변환이 가능하다.
-
-// const name = req.body.name;
-// const thumbnailUrl = req.body.thumbnailUrl;
-// const category = req.body.category;
-// const price = req.body.price;
-
-const {name, thumbnailUrl, category, price} = req.body;
-
-// +1된 goodsId를 가져온다.
-const goodsId = goods[goods.length - 1].goodsId + 1;
-
-// 구조분해할당 사용
-const goodsItem = {
-  goodsId,
-  name,
-  thumbnailUrl,
-  category,
-  price,
-}
-
-goods.push(goodsItem);
-
-return res.status(201).json({goods: goodsItem});
+  // 6. 생성된 상품 정보를 클라이언트에게 응답(Response)반환 한다.
+  return res.status(201).json({goods: createdGoods});
 
 })
+
 
 
 export default router;

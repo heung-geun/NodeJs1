@@ -1,10 +1,11 @@
 {
-  "name": "NodeJs-hgyun",
+  "name": "NodeJs-Hgyun",
   "version": "1.0.0",
   "main": "app.js",
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "express": "^4.21.1"
+    "express": "^4.21.1",
+    "mongoose": "^8.8.2"
   }
 }
